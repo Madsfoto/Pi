@@ -12,6 +12,7 @@ namespace Pi
 
         static void Main(string[] args)
         {
+
             ConcurrentBag<string> cb = new ConcurrentBag<string>();
             ulong denomMaxTotal = 5871781006564002450;
             decimal pi = 3.14159265359M;
@@ -98,10 +99,14 @@ namespace Pi
             //}
             //Console.ReadKey(); 
             #endregion
+            // constants: 
+            int start = 20;
+            int end = 360000;
+            Decimal precision = 0.0000001M;
 
-            Parallel.For(20, 360000, nominator =>
+            Parallel.For(start, end, nominator =>
             {
-                doCalc(nominator, 0.0000001M);
+                doCalc(nominator, precision);
                 
             });
 

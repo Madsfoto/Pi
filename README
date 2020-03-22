@@ -1,0 +1,8 @@
+﻿PROOF OF CONCEPT!
+
+C# dotnet core 3.1
+
+How it works: 
+
+Change the constants (line 103 to 105) to where you want to search for Pi. Compile and run. Then the results will be shown in the cmd window.
+
