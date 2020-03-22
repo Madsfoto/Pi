@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
-
+using System.IO;
 
 namespace Pi
 {
@@ -113,14 +113,27 @@ namespace Pi
             // show items in cb
             Console.WriteLine("Items in cb: "+cb.Count);
 
+
+            
+
             while (cb.Count > 0)
             {
                 string bagElement;
                 bool success = cb.TryTake(out bagElement);
                 if (success)
                 {
-                    Console.WriteLine(bagElement);
+                    using (System.IO.StreamWriter file =
+            new System.IO.StreamWriter("Num_Denom.txt", true))
+                    {
+                        file.WriteLine("Starting at " + start + " and ending at " + end + " with precision of " + precision);
+                        file.WriteLine(bagElement);
+                    }
+                    
                 }
+                
+                
+                
+                
             }
 
 
