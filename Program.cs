@@ -19,7 +19,7 @@ namespace Pi
             void doCalc(decimal d1, decimal accuracy)
             {
                 //Console.WriteLine(d1);
-                ulong denomMin = (ulong)Math.Floor(d1 / 4M);
+                ulong denomMin = (ulong)Math.Floor(d1 / 4M); // Should be 3.2, as the numbers to divide gets massively too large with 4
                 //Console.WriteLine(denomMin);
                 ulong denomMax = (ulong)Math.Ceiling(d1 / 3M);
                 //Console.WriteLine(denomMax);
