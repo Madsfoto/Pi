@@ -100,8 +100,8 @@ namespace Pi
             //Console.ReadKey(); 
             #endregion
             // constants: 
-            int start = 360000;
-            int end = 4000000;
+            int start = 4000000;
+            int end = 4500000;
             Decimal precision = 0.00000001M;
 
             Parallel.For(start, end, nominator =>
