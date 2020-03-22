@@ -20,9 +20,9 @@ namespace Pi
             void doCalc(decimal d1, decimal accuracy)
             {
                 //Console.WriteLine(d1);
-                ulong denomMin = (ulong)Math.Floor(d1 / 4M); // Should be 3.2, as the numbers to divide gets massively too large with 4
+                ulong denomMin = (ulong)Math.Floor(d1 / 3.2M); 
                 //Console.WriteLine(denomMin);
-                ulong denomMax = (ulong)Math.Ceiling(d1 / 3M);
+                ulong denomMax = (ulong)Math.Ceiling(d1 / 3.1M);
                 //Console.WriteLine(denomMax);
                 long distance = Math.Abs((long)denomMin - (long)denomMax);
                 //Console.WriteLine(distance);
@@ -100,8 +100,8 @@ namespace Pi
             //Console.ReadKey(); 
             #endregion
             // constants: 
-            int start = 20;
-            int end = 360000;
+            int start = 360000;
+            int end = 400000;
             Decimal precision = 0.0000001M;
 
             Parallel.For(start, end, nominator =>
