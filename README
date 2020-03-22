@@ -6,6 +6,8 @@ How it works:
 
 Change the constants (line 103 to 105) to where you want to search for Pi. Compile and run. Then the results will be shown in the cmd window.
 
+According to http://qin.laya.com/tech_projects_approxpi.html, the closest raction to Pi is 2646693125139304345 / 842468587426513207
+
 From 20 To 360000, the results are:
 Nom	Denom	Result	Diff to proper Pi
 312689	99532	3,14159265361894	2,91433543964104E-11

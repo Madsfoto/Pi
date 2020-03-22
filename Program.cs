@@ -101,8 +101,8 @@ namespace Pi
             #endregion
             // constants: 
             int start = 360000;
-            int end = 400000;
-            Decimal precision = 0.0000001M;
+            int end = 4000000;
+            Decimal precision = 0.00000001M;
 
             Parallel.For(start, end, nominator =>
             {
