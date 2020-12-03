@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Diagnostics;
 
 namespace Pi
 {
@@ -20,9 +21,9 @@ namespace Pi
             void doCalc(decimal d1, decimal accuracy)
             {
                 //Console.WriteLine(d1);
-                ulong denomMin = (ulong)Math.Floor(d1 / 3.2M); 
+                ulong denomMin = (ulong)Math.Floor(d1 / 3.141593M); 
                 //Console.WriteLine(denomMin);
-                ulong denomMax = (ulong)Math.Ceiling(d1 / 3.1M);
+                ulong denomMax = (ulong)Math.Ceiling(d1 / 3.141591M);
                 //Console.WriteLine(denomMax);
                 long distance = Math.Abs((long)denomMin - (long)denomMax);
                 //Console.WriteLine(distance);
@@ -31,13 +32,14 @@ namespace Pi
                 for (ulong denominator = denomMin; denominator < denomMax; denominator++)
                 {
 
-                    decimal fraction = (decimal)d1 / denominator;
-                  //Console.WriteLine(fraction);
+                    decimal fraction = d1 / denominator;
+                    //Console.WriteLine(fraction);
 
-                    if (Math.Abs((fraction - pi)) < accuracy)
+                    decimal absDiff = Math.Abs((fraction - pi));
+                    if (absDiff < accuracy)
                     {
                         //Console.WriteLine(fraction);
-                        cb.Add(d1+";"+denominator);
+                        cb.Add(d1+";"+denominator+";"+fraction+";"+absDiff);
                         
                         //Console.WriteLine("Nominator = " + d1 + ". Denominator = " + denominator);
 
@@ -100,9 +102,28 @@ namespace Pi
             //Console.ReadKey(); 
             #endregion
             // constants: 
-            int start = 4500000;
-            int end = 5000000;
-            Decimal precision = 0.00000001M;
+            int start = 1;
+            int end = 10;
+
+            if (args.Length==0)
+            {
+                start = 6500000;
+                end = 7000000;
+            }
+            
+            else if(args.Length==2)
+            {
+                start = Int32.Parse(args[0]);
+                end = Int32.Parse(args[1]);
+            }
+            
+
+            
+            Decimal precision = 0.00000000001M;
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
 
             Parallel.For(start, end, nominator =>
             {
@@ -110,30 +131,38 @@ namespace Pi
                 
             });
 
+            sw.Stop();
+            
             // show items in cb
             Console.WriteLine("Items in cb: "+cb.Count);
-
-
             
+            Console.WriteLine("Time elapsed: {0}", sw.Elapsed);
+            long ms = sw.ElapsedMilliseconds;
+            long mysPerNom = (ms*1000) / (end - start);
+            Console.WriteLine("Micro seconds elapsed per nominator: {0}", mysPerNom);
 
-            while (cb.Count > 0)
-            {
-                string bagElement;
-                bool success = cb.TryTake(out bagElement);
-                if (success)
-                {
-                    using (System.IO.StreamWriter file =
+            using (System.IO.StreamWriter file =
             new System.IO.StreamWriter("Num_Denom.txt", true))
+            {
+                file.WriteLine("Starting at " + start + " and ending at " + end + " with precision of " + precision);
+                file.WriteLine("Nominator/denominator=fractionResult;absDiff");
+                file.WriteLine("Nominator;denominator;fractionResult;absDiff");
+                file.WriteLine();
+                while (cb.Count > 0)
                     {
-                        file.WriteLine("Starting at " + start + " and ending at " + end + " with precision of " + precision);
+                string bagElement;
+                
+                    bool success = cb.TryTake(out bagElement);
+                if (success)
+                        {
                         file.WriteLine(bagElement);
-                    }
+                        }
                     
-                }
-                
-                
-                
-                
+                    }
+
+
+
+                file.WriteLine();
             }
 
 
