@@ -25,17 +25,16 @@ namespace Pi
                 //Console.WriteLine(denomMin);
                 ulong denomMax = (ulong)Math.Ceiling(d1 / 3.141591M);
                 //Console.WriteLine(denomMax);
-                long distance = Math.Abs((long)denomMin - (long)denomMax);
-                //Console.WriteLine(distance);
-
+                
 
                 for (ulong denominator = denomMin; denominator < denomMax; denominator++)
                 {
 
-                    decimal fraction = d1 / denominator;
+                    decimal fraction = Decimal.Divide(d1, Convert.ToDecimal(denominator));
+
                     //Console.WriteLine(fraction);
 
-                    decimal absDiff = Math.Abs((fraction - pi));
+                    decimal absDiff = Math.Abs(fraction - pi);
                     if (absDiff < accuracy)
                     {
                         //Console.WriteLine(fraction);
@@ -102,8 +101,8 @@ namespace Pi
             //Console.ReadKey(); 
             #endregion
             // constants: 
-            int start = 1;
-            int end = 10;
+            long start = 1;
+            long end = 10;
 
             if (args.Length==0)
             {
@@ -113,8 +112,8 @@ namespace Pi
             
             else if(args.Length==2)
             {
-                start = Int32.Parse(args[0]);
-                end = Int32.Parse(args[1]);
+                start = Int64.Parse(args[0]);
+                end = Int64.Parse(args[1]);
             }
             
 
