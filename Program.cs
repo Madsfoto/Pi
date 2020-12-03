@@ -4,16 +4,28 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Diagnostics;
+using System.Threading;
+using System.Globalization;
 
 namespace Pi
 {
     class Program
     {
-        
+        static void ShowUpdate()
+        {
+            Interlocked.Increment(ref number);
+            if (number % 100000 == 0)
+            {
+                Console.WriteLine(number.ToString("N1", CultureInfo.InvariantCulture));
+                
+            }
+
+        }
+        static int number = 0;
 
         static void Main(string[] args)
         {
-
+            
             ConcurrentBag<string> cb = new ConcurrentBag<string>();
             ulong denomMaxTotal = 5871781006564002450;
             decimal pi = 3.14159265359M;
@@ -118,7 +130,7 @@ namespace Pi
             
 
             
-            Decimal precision = 0.00000000001M;
+            Decimal precision = 0.000000000001M;
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -127,6 +139,7 @@ namespace Pi
             Parallel.For(start, end, nominator =>
             {
                 doCalc(nominator, precision);
+                ShowUpdate();
                 
             });
 
