@@ -16,6 +16,7 @@ namespace Pi
             Interlocked.Increment(ref number);
             if (number % 100000 == 0)
             {
+
                 Console.WriteLine(number.ToString("N1", CultureInfo.InvariantCulture));
                 
             }
@@ -26,23 +27,22 @@ namespace Pi
         static void Main(string[] args)
         {
             
-            ConcurrentBag<string> cb = new ConcurrentBag<string>();
-            ulong denomMaxTotal = 5871781006564002450;
+            ConcurrentBag<string> cb = new();
             decimal pi = 3.14159265359M;
 
-            void doCalc(decimal d1, decimal accuracy)
+            void doCalc(decimal start_nominator, decimal accuracy)
             {
                 //Console.WriteLine(d1);
-                ulong denomMin = (ulong)Math.Floor(d1 / 3.141593M); 
+                ulong denomMin = (ulong)Math.Floor(start_nominator / 3.141593M); 
                 //Console.WriteLine(denomMin);
-                ulong denomMax = (ulong)Math.Ceiling(d1 / 3.141591M);
+                ulong denomMax = (ulong)Math.Ceiling(start_nominator / 3.141591M);
                 //Console.WriteLine(denomMax);
                 
 
-                for (ulong denominator = denomMin; denominator < denomMax; denominator++)
+                for (decimal denominator = denomMin; denominator < denomMax; denominator++)
                 {
 
-                    decimal fraction = Decimal.Divide(d1, Convert.ToDecimal(denominator));
+                    decimal fraction = decimal.Divide(start_nominator, denominator);
 
                     //Console.WriteLine(fraction);
 
@@ -50,7 +50,7 @@ namespace Pi
                     if (absDiff < accuracy)
                     {
                         //Console.WriteLine(fraction);
-                        cb.Add(d1+";"+denominator+";"+fraction+";"+absDiff);
+                        cb.Add(start_nominator+";"+denominator+";"+fraction+";"+absDiff);
                         
                         //Console.WriteLine("Nominator = " + d1 + ". Denominator = " + denominator);
 
@@ -118,8 +118,8 @@ namespace Pi
 
             if (args.Length==0)
             {
-                start = 6500000;
-                end = 7000000;
+                start = 350000000;
+                end = 450000000;
             }
             
             else if(args.Length==2)
@@ -132,10 +132,11 @@ namespace Pi
             
             Decimal precision = 0.000000000001M;
 
-            Stopwatch sw = new Stopwatch();
+            Stopwatch sw = new();
             sw.Start();
 
-
+            Console.WriteLine(start);
+            Console.WriteLine(end);
             Parallel.For(start, end, nominator =>
             {
                 doCalc(nominator, precision);
@@ -153,29 +154,24 @@ namespace Pi
             long mysPerNom = (ms*1000) / (end - start);
             Console.WriteLine("Micro seconds elapsed per nominator: {0}", mysPerNom);
 
-            using (System.IO.StreamWriter file =
-            new System.IO.StreamWriter("Num_Denom.txt", true))
+            using StreamWriter file = new("Num_Denom.txt", true);
+            file.WriteLine("Starting at " + start + " and ending at " + end + " with precision of " + precision);
+            file.WriteLine("Nominator;denominator;fractionResult;absDiff");
+            file.WriteLine();
+            while (!cb.IsEmpty)
             {
-                file.WriteLine("Starting at " + start + " and ending at " + end + " with precision of " + precision);
-                file.WriteLine("Nominator/denominator=fractionResult;absDiff");
-                file.WriteLine("Nominator;denominator;fractionResult;absDiff");
-                file.WriteLine();
-                while (cb.Count > 0)
-                    {
-                string bagElement;
-                
-                    bool success = cb.TryTake(out bagElement);
+
+                bool success = cb.TryTake(out string bagElement);
                 if (success)
-                        {
-                        file.WriteLine(bagElement);
-                        }
-                    
-                    }
+                {
+                    file.WriteLine(bagElement);
+                }
 
-
-
-                file.WriteLine();
             }
+
+
+
+            file.WriteLine();
 
 
 
