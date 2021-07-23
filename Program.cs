@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Globalization;
 
+
 namespace Pi
 {
     class Program
@@ -22,23 +23,23 @@ namespace Pi
             }
 
         }
-        static int number = 0;
+        static ulong number = 0;
 
         static void Main(string[] args)
         {
             
             ConcurrentBag<string> cb = new();
-            decimal pi = 3.14159265359M;
-
+           
+            
             void doCalc(decimal start_nominator, decimal accuracy)
             {
                 //Console.WriteLine(d1);
-                ulong denomMin = (ulong)Math.Floor(start_nominator / 3.141593M); 
+                ulong denomMin = (ulong)Math.Floor(start_nominator / (decimal)Math.PI); 
                 //Console.WriteLine(denomMin);
-                ulong denomMax = (ulong)Math.Ceiling(start_nominator / 3.141591M);
+                ulong denomMax = (ulong)Math.Ceiling(start_nominator / (decimal)Math.PI);
                 //Console.WriteLine(denomMax);
                 
-
+                
                 for (decimal denominator = denomMin; denominator < denomMax; denominator++)
                 {
 
@@ -46,7 +47,7 @@ namespace Pi
 
                     //Console.WriteLine(fraction);
 
-                    decimal absDiff = Math.Abs(fraction - pi);
+                    decimal absDiff = Math.Abs(fraction - (decimal)Math.PI);
                     if (absDiff < accuracy)
                     {
                         //Console.WriteLine(fraction);
@@ -118,8 +119,11 @@ namespace Pi
 
             if (args.Length==0)
             {
-                start = 350000000;
-                end = 450000000;
+                start = 5000000000;
+                end = 7500000000;
+
+
+              
             }
             
             else if(args.Length==2)
@@ -130,13 +134,13 @@ namespace Pi
             
 
             
-            Decimal precision = 0.000000000001M;
+            decimal precision = 0.000000000000000001M;
+            
 
             Stopwatch sw = new();
             sw.Start();
 
-            Console.WriteLine(start);
-            Console.WriteLine(end);
+            
             Parallel.For(start, end, nominator =>
             {
                 doCalc(nominator, precision);
@@ -155,9 +159,16 @@ namespace Pi
             Console.WriteLine("Micro seconds elapsed per nominator: {0}", mysPerNom);
 
             using StreamWriter file = new("Num_Denom.txt", true);
-            file.WriteLine("Starting at " + start + " and ending at " + end + " with precision of " + precision);
-            file.WriteLine("Nominator;denominator;fractionResult;absDiff");
-            file.WriteLine();
+            if(File.Exists("Num_Denom.txt"))
+            {
+
+            }
+            else
+            {
+                file.WriteLine("Starting at " + start + " and ending at " + end + " with precision of " + precision);
+                file.WriteLine("Nominator;denominator;fractionResult;absDiff");
+
+            }
             while (!cb.IsEmpty)
             {
 
